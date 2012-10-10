@@ -13,7 +13,7 @@ This archive contains additional documentation files for SALOME platform:
 	20070620_SALOME_4.1.2_SMDS_reference_guide.pdf
 
 5. OCC: How to connect custom mesher in SMESH
-	20100917_SALOME_Mesh_Plugins.pdf
+	20120823_SALOME_Mesh_Plugins.pdf
 
 6. CEA: Integration tutorial
 	integration_tutorial.pdf
