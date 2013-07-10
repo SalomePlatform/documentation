@@ -3,8 +3,7 @@ Exposing a module's configuration (advanced)
 
 (to be completed)
 
-Most important SALOME modules (KERNEL, GUI, MED) exposes their configuration
-in a dedicated CMake file.
+Most important SALOME modules (KERNEL, GUI, MED) expose their configuration in a dedicated CMake file.
 
 Following the CMake tutorial (http://www.cmake.org/Wiki/CMake/Tutorials/How_to_create_a_ProjectConfig.cmake_file) some 
 important module install \*Config.cmake files facilitating the configuration of other dependent modules. When writing such 
@@ -35,3 +34,5 @@ Care must be taken to explicitly request a target to be part of the export set i
      RUNTIME DESTINATION "${INSTALL_BIN_DIR}")
 
 
+
+possibility to have a minimal specification on the prerequisites (technically one just need to set the _ROOT_DIR variables for the packages that were never found before), and to get "for free" what was already found in a dependent module

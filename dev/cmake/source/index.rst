@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    intro.rst
+   skeleton.rst
    pkg.rst
    config.rst
    various.rst

@@ -1,13 +1,16 @@
 Package detection mechanism
 ===========================
 
-Philosophy and priority order
------------------------------
+Philosophy
+----------
 
 The philosophy of the SALOME package detection is to rely as 
 much as possible on the standard CMake modules.
 It is assumed those modules will get better and better with newer releases of CMake
 and doing so ensures future compatibility with newer versions of CMake.
+
+Root dir variables and priority order
+-------------------------------------
 
 The detection is however guided through a variable of the form XYZ_ROOT_DIR which
 gives the root directory of an installation of the package. For example, to indicate
@@ -18,8 +21,8 @@ The variable guiding the detection is always builts as::
 
   XYZ_ROOT_DIR
 
-where <XYZ> is the upper case name of the standard CMake module. For example, the
-detection of Qt4 is guided by setting QT4_ROOT_DIR.
+where <XYZ> is (*exactly*) the upper case name of the standard CMake module. For example, the
+detection of Qt4 is guided by setting QT4_ROOT_DIR. The variables \*_ROOT_DIR are only there to guide the process, not to force it. Typically under Linux, one would never set PTHREAD_ROOT_DIR, thus leaving the logic find the system installation. 
 
 The order of priority for the detection of a package is (from high to low priority):
 
@@ -55,7 +58,8 @@ All prerequisite detection in SALOME should be implemented by:
 
   * as first argument the name of the package (here CppUnit), 
   * as second argument, the name of a (path) variable set when the package is found properly, 
-  * and as third argument, the number of levels this variable should be browsed up to reach the root directory of the package installation.
+  * as third argument, the number of levels this variable should be browsed up to reach the root directory of the package installation.
+  * as optional fourth (and plus) argument: a list of components (if needed - e.g. for Qt4, we only load a subset of components)
 
 * in the example above, we look for the package CppUnit (note that this is case-sensitive). There is already a standard CMake module to detect CppUnit, which sets the CMake variable CPPUNIT_INCLUDE_DIRS to the (list of) directories to include when compiling with CppUnit. Going one level up from the include directory (typically /usr/include) gives the root directory of the installation (/usr) 
 * the reference variable may be a list, only its first element is then considered.
@@ -111,6 +115,8 @@ Implementation details (advanced)
 The core of the SALOME detection logic is located in the macro
 SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS() implemented in KERNEL/salome_adm/cmake_files/SalomeMacros.cmake.
 
+All the logic is thus concentrated in one (hopefully well documented) macro. This means: one place to fix if there is a bug, and better, one place to amend if we ever want to define a new behaviour (for example if we want to change the order of priorities between CONFIG and MODULE mode). The end user (someone developing in SALOME) just needs to call it. It is the responsability of the core SALOME developpers to understand and maintain this macro.
+
 The reader is invited to read the have the code at hand when reading the following.
 
 The macro signature is
@@ -147,6 +153,9 @@ The macro has a significant size but is very linear:
 
 
 The specific stuff (for example exposing a prerequisite of XYZ to the rest of the world for future conflict detection) is added after the call to the macro by the callee. See for example the FindSalomeHDF5.cmake macro which exposes the MPI_ROOT_DIR if HDF5 was compiled with parallel support.
+
+
+
 
 
 
