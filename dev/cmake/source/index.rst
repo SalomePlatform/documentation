@@ -12,6 +12,9 @@ Contents:
    :maxdepth: 2
 
    intro.rst
+   pkg.rst
+   config.rst
+   various.rst
 
 
 Indices and tables
