@@ -3,8 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to CMake build procedure's documentation!
-=================================================
+SALOME - CMake build procedure
+==============================
+
+The section marked as ADVANCED need not be read by someone only trying to compile SALOME. Those
+sections are intented to the core SALOME developers, to help them understand/fix/improve
+the process.
 
 Contents:
 

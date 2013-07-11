@@ -1,3 +1,5 @@
+.. _package:
+
 Package detection mechanism
 ===========================
 
@@ -24,6 +26,8 @@ The variable guiding the detection is always builts as::
 where <XYZ> is (*exactly*) the upper case name of the standard CMake module. For example, the
 detection of Qt4 is guided by setting QT4_ROOT_DIR. The variables \*_ROOT_DIR are only there to guide the process, not to force it. Typically under Linux, one would never set PTHREAD_ROOT_DIR, thus leaving the logic find the system installation. 
 
+Beware that package names in the CMakeLists.txt are case-sensitive, but the corresponding variables are always upper-case (because on some platforms environment variables are not case-sensitive).
+
 The order of priority for the detection of a package is (from high to low priority):
 
 1. CMake variables explicitly set by the user (typically on the command line with -DXYZ_ROOT_DIR=...)
@@ -31,8 +35,15 @@ The order of priority for the detection of a package is (from high to low priori
 3. Default value based on a previous dependency using the tool already
 4. Detection direclty in the host system by the standard CMake logic
 
+CMake has two possible modes of detection, CONFIG mode and MODULE mode. The order of priority is explicitly set in SALOME to:
+
+1. CONFIG (also called NO_MODULE) mode: this tries to load a xyz-config.cmake file from the package installation itself
+2. MODULE mode: this relies on the logic written in a FindXyz.cmake macro, looking directly for representative libraries, binaries or headers of the package.
+
+The first mode is preferred as it allows to directly include the CMake targets of the prerequisite.
+
 The package detection is only made in the root CMakeLists.txt, potentially conditionned on some
-user options. Package names are case-sensitive, but the corresponding variables are always upper-case.
+user options. 
 
 Writing the detection macro of a new SALOME prerequisite
 --------------------------------------------------------
@@ -48,22 +59,28 @@ or::
 All prerequisite detection in SALOME should be implemented by:
 
 * writing a file FindSalome<Xyz>.cmake (note the extra ''Salome''), where <Xyz> matches *exactly* the name of the standard CMake module (see below if there is no standard module for <Xyz>)
-* typically this file looks like this::
+* invoking FIND_PACKAGE() command in the root CMakeLists.txt::
+  
+    FIND_PACKAGE(SalomeLibXml2 REQUIRED)
+
+Typically the FindSalome<Xyz>.cmake file looks like this::
 
     SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS(CppUnit CPPUNIT_INCLUDE_DIRS 1)
     MARK_AS_ADVANCED(CPPUNIT_INCLUDE_DIRS CPPUNIT_LIBRARIES CPPUNIT_CONFIG_BIN CPPUNIT_SUBLIB_cppunit CPPUNIT_SUBLIB_dl)
 
- 
-* It invokes the SALOME macro SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS() which takes:
+It invokes the SALOME macro SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS() which takes:
 
-  * as first argument the name of the package (here CppUnit), 
-  * as second argument, the name of a (path) variable set when the package is found properly, 
-  * as third argument, the number of levels this variable should be browsed up to reach the root directory of the package installation.
-  * as optional fourth (and plus) argument: a list of components (if needed - e.g. for Qt4, we only load a subset of components)
+* as first argument the name of the package (here CppUnit), 
+* as second argument, the name of a (path) variable set when the package is found properly, 
+* as third argument, the number of levels this variable should be browsed up to reach the root directory of the package installation.
+    
 
-* in the example above, we look for the package CppUnit (note that this is case-sensitive). There is already a standard CMake module to detect CppUnit, which sets the CMake variable CPPUNIT_INCLUDE_DIRS to the (list of) directories to include when compiling with CppUnit. Going one level up from the include directory (typically /usr/include) gives the root directory of the installation (/usr) 
-* the reference variable may be a list, only its first element is then considered.
+In the example above,
+
+* we look for the package CppUnit (note that this is case-sensitive). There is already a standard CMake module to detect CppUnit, which sets the CMake variable CPPUNIT_INCLUDE_DIRS to the (list of) directories to include when compiling with CppUnit. Going one level up from the include directory (typically /usr/include) gives the root directory of the installation (/usr).
 * all the variables exposed in the cache by the standard detection logic (CPPUNIT_INCLUDE_DIRS, CPPUNIT_LIBRARIES, etc ...) are marked as "advanced" so that they do not automatically appear in ccmake or cmake-gui.
+
+Note that the reference variable may be a list, only its first element is then considered.
 
 Writing a new generic detection macro (advanced)
 ------------------------------------------------
@@ -86,7 +103,8 @@ The following guidelines apply:
 
 * This macro takes care (among other things) of setting the XYZ_FOUND variable (upper case), and of displaying a message if not in QUIET mode (TBC).
 * the macro should be saved in the same directory as above
-* respect the naming conventions for the variables you set (start with the package name, upper case)
+* respect the naming conventions for the variables you set (start with the package name, upper case - see :ref:`naming_conventions`)
+* do not do any ADD_DEFINITIONS() or INCLUDE_DIRECTORIES() in such a macro. This should be done by the caller or in a UseXYZ.cmake file. The purpose of a FindXXX.cmake macro is to detect, not to make usable. This rule does not apply to FindSalomeXXX.cmake macros where we know we are always in the SALOME context.
 * here is a simple example of the detection of Sphinx::
 
     # - Sphinx detection
@@ -109,6 +127,8 @@ The following guidelines apply:
     FIND_PACKAGE_HANDLE_STANDARD_ARGS(Sphinx REQUIRED_VARS SPHINX_EXECUTABLE)
 
 
+.. _pkg_impl:
+
 Implementation details (advanced)
 ---------------------------------
 
@@ -117,19 +137,18 @@ SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS() implemented in KERNEL/salome_adm/cmak
 
 All the logic is thus concentrated in one (hopefully well documented) macro. This means: one place to fix if there is a bug, and better, one place to amend if we ever want to define a new behaviour (for example if we want to change the order of priorities between CONFIG and MODULE mode). The end user (someone developing in SALOME) just needs to call it. It is the responsability of the core SALOME developpers to understand and maintain this macro.
 
-The reader is invited to read the have the code at hand when reading the following.
+The reader is invited to have the code at hand when reading the following.
 
 The macro signature is
 ::
 
-  SALOME_FIND_PACKAGE_DETECT_CONFLICTS(pkg referenceVariable upCount <component1> <component2> ...)
+  SALOME_FIND_PACKAGE_DETECT_CONFLICTS(pkg referenceVariable upCount)
 
 where:
 
 * *pkg*              : name of the system package to be detected
 * *referenceVariable*: variable containing a path that can be browsed up to retrieve the package root directory (xxx_ROOT_DIR)
 * *upCount*          : number of times we have to go up from the path <referenceVariable> to obtain the package root directory.
-* *<component_n>*    : an optional list of components to be found.  
 
 For example::  
 
@@ -137,23 +156,34 @@ For example::
 
 The macro has a significant size but is very linear:
 
-1. Load a potential env variable XYZ_ROOT_DIR as a default choice for the cache entry XYZ_ROOT_DIR
+1. Load a potential env variable XYZ_ROOT_DIR as a default choice for the cache entry XYZ_ROOT_DIR.
    If empty, load a potential XYZ_ROOT_DIR_EXP as default value (path exposed by another package depending
    directly on XYZ)
 2. Invoke FIND_PACKAGE() in this order:
 
-    * in CONFIG mode first (if possible): priority is given to a potential "XYZ-config.cmake" file.
-    * then switch to the standard MODULE mode, appending on CMAKE_PREFIX_PATH the above XYZ_ROOT_DIR variable.
+  * in CONFIG mode first (if possible): priority is given to a potential "XYZ-config.cmake" file.
+  * then switch to the standard MODULE mode, appending on CMAKE_PREFIX_PATH the above XYZ_ROOT_DIR variable.
 
 3. Extract the path actually found into a temp variable _XYZ_TMP_DIR
 4. Warn if XYZ_ROOT_DIR is set and doesn't match what was found (e.g. when CMake found the system installation
-   instead of what is pointed to by XYZ_ROOT_DIR - happens when a typo in the content of XYZ_ROOT_DIR).
+   instead of what is pointed to by XYZ_ROOT_DIR - happens when there is a typo in the content of XYZ_ROOT_DIR).
 5. Conflict detection: check the temporary variable against a potentially existing XYZ_ROOT_DIR_EXP
-6. Finally expose what was _actually_ found in XYZ_ROOT_DIR.  
+6. Finally expose what was *actually* found in XYZ_ROOT_DIR.  This might be different from the initial XYZ_ROOT_DIR, but there has been a warning in such a case.
 
 
 The specific stuff (for example exposing a prerequisite of XYZ to the rest of the world for future conflict detection) is added after the call to the macro by the callee. See for example the FindSalomeHDF5.cmake macro which exposes the MPI_ROOT_DIR if HDF5 was compiled with parallel support.
 
+If the invokation of FIND_PACKAGE() was done with some options:
+
+* QUIET, REQUIRED
+* COMPONENTS
+* VERSION [EXACT]
+
+those options are completly handled through the analysis of the standard CMake variables (which are automatically set when those options are given):
+
+* Xyz_FIND_QUIETLY and Xyz_FIND_REQUIRED
+* Xyz_FIND_COMPONENTS
+* Xyz_FIND_VERSION and Xyz_FIND_VERSION_EXACT
 
 
 
