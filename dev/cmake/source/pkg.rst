@@ -161,7 +161,7 @@ The macro has a significant size but is very linear:
    directly on XYZ)
 2. Invoke FIND_PACKAGE() in this order:
 
-  * in CONFIG mode first (if possible): priority is given to a potential "XYZ-config.cmake" file.
+  * in CONFIG mode first (if possible): priority is given to a potential "XYZ-config.cmake" file. In this mode, the standard system paths are skipped. If you however want to force a detection in CONFIG mode into a system path, you have to set explicitly the XYZ_ROOT_DIR variable to "/usr".
   * then switch to the standard MODULE mode, appending on CMAKE_PREFIX_PATH the above XYZ_ROOT_DIR variable.
 
 3. Extract the path actually found into a temp variable _XYZ_TMP_DIR
