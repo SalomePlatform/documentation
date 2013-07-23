@@ -3,13 +3,18 @@
 Package detection mechanism
 ===========================
 
+SALOME modules need some external packages in order to compile and run properly. For example KERNEL relies on the Python libraries, on the Boost libraries, etc ... The correct detection of those prerequisites is a key point of the CMake build procedure.
+
 Philosophy
 ----------
 
-The philosophy of the SALOME package detection is to rely as 
-much as possible on the standard CMake modules.
+The philosophy of the SALOME package detection is, first, to rely as 
+much as possible on the standard CMake detection modules (FindXyz.cmake files, located in the standard CMake installation directory).
 It is assumed those modules will get better and better with newer releases of CMake
-and doing so ensures future compatibility with newer versions of CMake.
+and using them ensures future compatibility with newer versions of CMake.
+
+Second, the implementation of the detection process relies exclusively
+on the XYZ_ROOT_DIR variable giving the installation path of the package. This means the user compiling SALOME should not have to set anything else than those XYZ variables (no PATH override, no LD_LIBRARY_PATH override should be necessary). This is not strictly always possible, but should enforce as often as possible.
 
 Root dir variables and priority order
 -------------------------------------
