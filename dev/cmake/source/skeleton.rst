@@ -33,13 +33,20 @@ The root CMakeLists.txt should contain the following elements:
     ENDIF() 
 
 
-* Installation directories. Those directories should be used consistently across all SALOME modules::
+* Common installation directories. Those directories should be used consistently across all SALOME modules::
 
     SET(SALOME_INSTALL_BINS bin/salome CACHE PATH "Install path: SALOME binaries")
     SET(SALOME_INSTALL_LIBS lib/salome CACHE PATH "Install path: SALOME libs")
     SET(SALOME_INSTALL_IDLS idl/salome CACHE PATH "Install path: SALOME IDL files")
     SET(SALOME_INSTALL_HEADERS include/salome CACHE PATH "Install path: SALOME headers")
     SET(SALOME_INSTALL_SCRIPT_SCRIPTS ${SALOME_INSTALL_BINS} CACHE PATH "Install path: SALOME scripts")
+    ...
+
+
+* Specific installation directories. Those should start with SALOME_<MODULE>::
+
+    SET(SALOME_GUI_INSTALL_PARAVIEW_LIBS lib/paraview CACHE PATH "Install path: SALOME GUI ParaView libraries")
+    SET(SALOME_GUI_INSTALL_RES_DATA "${SALOME_INSTALL_RES}/gui" CACHE PATH "Install path: SALOME GUI specific data")    
     ...
 
 
@@ -63,11 +70,11 @@ First, include directories::
   INCLUDE_DIRECTORIES(
     ${OMNIORB_INCLUDE_DIR}
     ${PTHREAD_INCLUDE_DIRS}
-    ${CMAKE_BINARY_DIR}/salome_adm
+    ${PROJECT_BINARY_DIR}/salome_adm
     ${CMAKE_CURRENT_SOURCE_DIR}/../Basics
     ${CMAKE_CURRENT_SOURCE_DIR}/../SALOMELocalTrace
     ${CMAKE_CURRENT_SOURCE_DIR}/../Utils
-    ${CMAKE_BINARY_DIR}/idl
+    ${PROJECT_BINARY_DIR}/idl
     )
 
 Then we define the sources list <target>_SOURCES::
