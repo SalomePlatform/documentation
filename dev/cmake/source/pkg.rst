@@ -42,7 +42,7 @@ The order of priority for the detection of a package is (from high to low priori
 
 CMake has two possible modes of detection, CONFIG mode and MODULE mode. The order of priority is explicitly set in SALOME to:
 
-1. CONFIG (also called NO_MODULE) mode: this tries to load a xyz-config.cmake file from the package installation itself
+1. CONFIG (also called NO_MODULE) mode: this tries to load a xyz-config.cmake file from the package installation itself. Note that by default, this mode doesn't look at a potential system installation. If you do want the CONFIG mode to also inspect your system, you have to explicitly set the XYZ_ROOT_DIR variable to your system's path (typically "/usr").
 2. MODULE mode: this relies on the logic written in a FindXyz.cmake macro, looking directly for representative libraries, binaries or headers of the package.
 
 The first mode is preferred as it allows to directly include the CMake targets of the prerequisite.
@@ -68,6 +68,13 @@ All prerequisite detection in SALOME should be implemented by:
   
     FIND_PACKAGE(SalomeLibXml2 REQUIRED)
 
+* potentially, a prerequisite might be optional. In this case the following syntax is preferred::
+  
+    FIND_PACKAGE(SalomeLibXml2)
+    SALOME_UPDATE_FLAG_AND_LOG_PACKAGE(LibXml2 SALOME_FOO_FEATURE)
+
+* the custom macro SALOME_UPDATE_FLAG_AND_LOG_PACKAGE takes care of switching OFF the flag SALOME_FOO_FEATURE if the package was not found. The final status of what has been found or not can then be displayed by calling SALOME_PACKAGE_REPORT().
+
 Typically the FindSalome<Xyz>.cmake file looks like this::
 
     SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS(CppUnit CPPUNIT_INCLUDE_DIRS 1)
@@ -82,7 +89,8 @@ It invokes the SALOME macro SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS() which tak
 
 In the example above,
 
-* we look for the package CppUnit (note that this is case-sensitive). There is already a standard CMake module to detect CppUnit, which sets the CMake variable CPPUNIT_INCLUDE_DIRS to the (list of) directories to include when compiling with CppUnit. Going one level up from the include directory (typically /usr/include) gives the root directory of the installation (/usr).
+* we look for the package CppUnit (note that this is case-sensitive). There is already a standard CMake module to detect CppUnit, which sets the CMake variable CPPUNIT_INCLUDE_DIRS to the (list of) directories to include when compiling with CppUnit. 
+* going one level up from the include directory (typically /usr/include) gives the root directory of the installation (/usr).
 * all the variables exposed in the cache by the standard detection logic (CPPUNIT_INCLUDE_DIRS, CPPUNIT_LIBRARIES, etc ...) are marked as "advanced" so that they do not automatically appear in ccmake or cmake-gui.
 
 Note that the reference variable may be a list, only its first element is then considered.

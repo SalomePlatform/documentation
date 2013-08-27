@@ -25,12 +25,21 @@ The root CMakeLists.txt should contain the following elements:
     FIND_PACKAGE(SalomeSWIG REQUIRED)
 
 
-* Detection of the optional prerequisites (potentially conditioned on some user options)::
+* Detection of the optional prerequisites (potentially conditioned on some user options - see :ref:`package` for more on this)::
 
-    IF(NOT SALOME_LIGHT_ONLY)
-      FIND_PACKAGE(SalomeOmniORB REQUIRED)
-      FIND_PACKAGE(SalomeOmniORBPy REQUIRED)
-    ENDIF() 
+    IF(SALOME_BUILD_DOC)
+      FIND_PACKAGE(SalomeDoxygen)
+      FIND_PACKAGE(SalomeGraphviz)
+      FIND_PACKAGE(SalomeSphinx)
+      SALOME_UPDATE_FLAG_AND_LOG_PACKAGE(Doxygen SALOME_BUILD_DOC)
+      SALOME_UPDATE_FLAG_AND_LOG_PACKAGE(Graphviz SALOME_BUILD_DOC)
+      SALOME_UPDATE_FLAG_AND_LOG_PACKAGE(Sphinx SALOME_BUILD_DOC)
+    ENDIF(SALOME_BUILD_DOC)
+
+
+* Printing a report about the detection status::
+
+    SALOME_PACKAGE_REPORT()
 
 
 * Common installation directories. Those directories should be used consistently across all SALOME modules::
