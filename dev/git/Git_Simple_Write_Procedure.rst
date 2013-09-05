@@ -6,12 +6,18 @@ This short document indicates the process to be followed by anyone wishing to co
 Get your copy of the central repository
 ---------------------------------------
 
-1. Clone the latest version of the repository for the module you want to modify::
+1. Clone the latest version of the repository for the module you want to modify::    
 
-    git clone ssh://<proper-final-url> 
-  
+     git clone ssh://<proper-final-url>
+
+   or::
+
+     git clone https://<proper-final-url>
   
   This retrieves a local copy of the module's repository onto your machine. 
+   
+  .. note:: The later should be used to work behind a proxy (see :ref:`special-instructions-for-https` )
+  
 
 2. If you were already given a branch name to work with, you can simply retrieve it and start working::
 
@@ -108,4 +114,30 @@ Workflow
   This makes your changes visible to others.
 
 10. Once all your changes have been committed (potentially several commits) and you feel your modification is ready to be integrated in the main development line (i.e. to be considered for the next release), you can notify an administrator of the project to ask for your changes to be merged in the *master* branch. 
+
+.. _special-instructions-for-https:
+
+Special instructions for https protcol
+--------------------------------------
+
+Certificates
+~~~~~~~~~~~~
+To be able to use the https protocol you will first have to install the appropriate certificate (let's call it *ca.crt*)
+On Debian the procedure is described here::
+
+  /usr/share/doc/ca-certificates/README.Debian
+
+As explained in this file you will have to copy the certificate *ca.crt* in::
+
+  /usr/local/share/ca-certificates/
+
+and run::
+
+  update-ca-certificates
+
+Configure Git for http(s) protocol behind a proxy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+If you want to use Git via http (or https) protocol behind a proxy configure Git by executing the following command::
+
+ git config --global http.proxy http://<login_internet>:<password_internet>@aproxy:aport
 
