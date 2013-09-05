@@ -117,7 +117,7 @@ Workflow
 
 .. _special-instructions-for-https:
 
-Special instructions for https protcol
+Special instructions for https protocol
 --------------------------------------
 
 Certificates
