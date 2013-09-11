@@ -16,6 +16,8 @@ and using them ensures future compatibility with newer versions of CMake.
 Second, the implementation of the detection process relies exclusively
 on the XYZ_ROOT_DIR variable giving the installation path of the package. This means the user compiling SALOME should not have to set anything else than those XYZ variables (no PATH override, no LD_LIBRARY_PATH override should be necessary). This is not strictly always possible, but should enforce as often as possible.
 
+Finally only the direct dependencies of a module should be explicitly detected: for example GUI has no source code which uses MPI functionalities. Hence GUI does not detect the MPI package. However if KERNEL was compiled with MPI, then some of the information (include directories, definitions, ...) needs to be propagated to GUI (in this case for example, MPI needs to be in the list of include directories, since GUI include KERNEL headers, which themselves include MPI headers). This is done exclusively through the variables exposed in the KERNEL configuration file: KERNEL_INCLUDE_DIRS, KERNEL_DEFINITIONS.
+
 Root dir variables and priority order
 -------------------------------------
 

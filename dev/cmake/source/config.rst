@@ -136,6 +136,7 @@ The user options, and the directories of the level 1 prerequisites (i.e. direct 
 
   # Include directories
   SET_AND_CHECK(GUI_INCLUDE_DIRS "${GUI_ROOT_DIR_EXP}/@SALOME_INSTALL_HEADERS@")
+  SET(GUI_DEFINITIONS "@KERNEL_DEFINITIONS@")
 
   # Options exported by the package:
   SET(SALOME_USE_MPI     @SALOME_USE_MPI@)
