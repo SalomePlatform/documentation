@@ -73,9 +73,13 @@ All prerequisite detection in SALOME should be implemented by:
 * potentially, a prerequisite might be optional. In this case the following syntax is preferred::
   
     FIND_PACKAGE(SalomeLibXml2)
-    SALOME_UPDATE_FLAG_AND_LOG_PACKAGE(LibXml2 SALOME_FOO_FEATURE)
+    SALOME_LOG_OPTIONAL_PACKAGE(LibXml2 SALOME_FOO_FEATURE)
+    
 
-* the custom macro SALOME_UPDATE_FLAG_AND_LOG_PACKAGE takes care of switching OFF the flag SALOME_FOO_FEATURE if the package was not found. The final status of what has been found or not can then be displayed by calling SALOME_PACKAGE_REPORT().
+* the custom macro SALOME_LOG_OPTIONAL_PACKAGE registers internally the fact that the package is optional, and the flag that can be changed to avoid its detection. The final status of what has been found or not can then be displayed by calling SALOME_PACKAGE_REPORT_AND_CHECK(). This will trigger the failure of the configuration process if some package is missing, and it will also display the flag that should be turned OFF to avoid the issue::
+
+    # Final report and global check of optional prerequisites:
+    SALOME_PACKAGE_REPORT_AND_CHECK()
 
 Typically the FindSalome<Xyz>.cmake file looks like this::
 
