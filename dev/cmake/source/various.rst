@@ -17,6 +17,12 @@ Each of the following solutions displays the full command line for each build ac
 To have this by default for every build, one can specify this setting at the configuration 
 step by toggling the CMAKE_VERBOSE_MAKEFILE to ON.
 
+Normally detection problems are wrapped by the macro SALOME_FIND_PACKAGE_AND_DETECT_CONFLICTS() to print a simple error message that mostly shows the current content of the XYZ_ROOT_DIR variable. The developper can switch the flag::
+
+  SALOME_CMAKE_DEBUG
+  
+to ON to see the full original CMake error message.
+
 .. _conventions:
 
 General conventions
