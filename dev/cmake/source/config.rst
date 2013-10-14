@@ -129,7 +129,8 @@ The target file is loaded only if a representative target of the project (here i
 Note how the variable SALOME_INSTALL_CMAKE is prefixed with PACKAGE_SALOME_INSTALL_CMAKE. With this setup the helper macro CONFIGURE_PACKAGE_CONFIG_FILE() is able to adjust correctly the path (contained in SALOME_INSTALL_CMAKE) to always point to the right place (regardless of wether the SalomeGUIConfig.cmake file is in the build tree or in the install tree).
 This is why the variable SALOME_INSTALL_CMAKE is passed as an argument when calling CONFIGURE_PACKAGE_CONFIG_FILE(). 
 
-The user options, and the directories of the level 1 prerequisites (i.e. direct dependencies) are exposed in a variable called ''XYZ_ROOT_DIR_EXP'' (note the trailing ''EXP'' like EXPosed). This will be used by the package detection logic to check for potential conflicts::
+The user options, and the directories of the level 1 prerequisites (i.e. direct dependencies) are exposed in a variable called ''XYZ_ROOT_DIR_EXP'' (note the trailing ''EXP'' like EXPosed). This will be used by the package detection logic to check for potential conflicts.
+The @PACKAGE_XYZ_ROOT_DIR@ variables are expanded by CONFIGURE_PACKAGE_CONFIG_FILE(). If you want to use a @PACKAGE_XYZ_ROOT_DIR@ in the config file, don't forget to add explicitly the XYZ_ROOT_DIR variable to the list of variables to be expanded by CONFIGURE_PACKAGE_CONFIG_FILE():: 
 
   # Package root dir:
   SET_AND_CHECK(GUI_ROOT_DIR_EXP "@PACKAGE_CMAKE_INSTALL_PREFIX@")
