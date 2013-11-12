@@ -36,6 +36,7 @@ SET(${PROJECT_NAME_UC}_VERSION_DEV 1)
 # Our own set of macros:
 # ==================
 LIST(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMakeModules")
+INCLUDE(SalomeSetupPlatform)
 INCLUDE(SalomeMacros)
 
 
