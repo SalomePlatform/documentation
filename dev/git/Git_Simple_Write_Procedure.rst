@@ -6,25 +6,19 @@ This short document indicates the process to be followed by anyone wishing to co
 Get your copy of the central repository
 ---------------------------------------
 
-1. Clone the latest version of the repository for the module you want to modify::    
+1. Clone the latest version of the repository for the module you want to modify::
 
-     git clone ssh://<proper-final-url>
-
-   or::
-
-     git clone https://<proper-final-url>
+    git clone ssh://<proper-final-url> 
+  
   
   This retrieves a local copy of the module's repository onto your machine. 
-   
-  .. note:: The later should be used to work behind a proxy (see :ref:`special-instructions-for-https` )
-  
 
 2. If you were already given a branch name to work with, you can simply retrieve it and start working::
 
     git checkout -b <branch_name> origin/<branch_name>
 
 
-  This creates a local copy of the branch, set up to be a copy of the remote branch on the central server. You can jump directly to the next section (Workflow) telling how to commit and publish changes.
+  This creates a local copy of the branch, and sets it up to be a copy of the remote branch on the central server. You can jump directly to the next section (Workflow) telling how to commit and publish changes.
 
 3. Otherwise you need to create and publish a new branch in which you will do your changes (you are not allowed to commit changes directly into the main branch 'master'). First create the local version of the new branch::
 
@@ -55,6 +49,7 @@ Workflow
 
 1. If you didn't update your local copy for a while, update it with the following command. This retrieves from the central server all changes published by other people working on your branch. This step is not necessary if you just initialized your repository as described above::
 
+    git checkout <xyz/short_desc>
     git pull
   
 2. Do your changes, compile. 
@@ -71,14 +66,15 @@ Workflow
 
     GLViewer: enhance ergonomy of the 3D view
   
-    User can now zoom in and out using the mouse wheel. Corresponding keyboard shortcuts have also been added.
+    User can now zoom in and out using the mouse wheel. 
+    Corresponding keyboard shortcuts have also been added.
 
   i.e. a first short line containing the class/code entity that was modified, and a short description of the change. Then a blank line, and a long description of the change. Remember that this message is mainly for other people to understand quickly what you did.
   
   
   At this point, the changes are just saved in your local repository. You can still revert them, amend the commits, and perform any other operation that re-writes the local history.
   
-6. Once you feel everything is ready to be seen by the rest of the world, you can publish your work. The first step is to synchronize again with any potential change published on the central repository while you were working locally::
+6. Once you feel everything is ready to be seen by the rest of the world, you can publish your work. The first step is to synchronize again with any potential change published in your branch on the central repository. This can happen while you were working locally::
 
     git pull
   
@@ -114,30 +110,4 @@ Workflow
   This makes your changes visible to others.
 
 10. Once all your changes have been committed (potentially several commits) and you feel your modification is ready to be integrated in the main development line (i.e. to be considered for the next release), you can notify an administrator of the project to ask for your changes to be merged in the *master* branch. 
-
-.. _special-instructions-for-https:
-
-Special instructions for https protocol
---------------------------------------
-
-Certificates
-~~~~~~~~~~~~
-To be able to use the https protocol you will first have to install the appropriate certificate (let's call it *ca.crt*)
-On Debian the procedure is described here::
-
-  /usr/share/doc/ca-certificates/README.Debian
-
-As explained in this file you will have to copy the certificate *ca.crt* in::
-
-  /usr/local/share/ca-certificates/
-
-and run::
-
-  update-ca-certificates
-
-Configure Git for http(s) protocol behind a proxy
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-If you want to use Git via http (or https) protocol behind a proxy configure Git by executing the following command::
-
- git config --global http.proxy http://<login_internet>:<password_internet>@aproxy:aport
 
