@@ -111,3 +111,96 @@ Workflow
 
 10. Once all your changes have been committed (potentially several commits) and you feel your modification is ready to be integrated in the main development line (i.e. to be considered for the next release), you can notify an administrator of the project to ask for your changes to be merged in the *master* branch. 
 
+
+Special notes for EDF users
+---------------------------
+
+Working with YAMM
+^^^^^^^^^^^^^^^^^
+
+YAMM is the tool used at EDF to build SALOME platform. Among other things, it
+can automatically fetch and compile SALOME sources. If you just need a
+read-only access to Salome sources from a standard EDF computer (Calibre 7),
+you just need to run YAMM with no specific configuration. The sources will be
+fetched automatically and the compilation will proceed as usual.
+
+If you need to develop and push changes in Salome sources, follow those steps:
+
+1. Make sure you have a write access to Salome sources. If not, ask your project
+   manager who will forward your request to Salome repository administrator.
+
+2. Save your credentials on your local computer. For that, edit the file
+   $HOME/.netrc (create it if it doesn't exist), and add the following lines::
+
+    machine git.salome-platform.org
+    login mylogin
+    password mypassword
+
+  Replace "mylogin" by your login on Salome repository and "mypassword" by
+  your password on the repository. The password here is in clear, so make sure
+  this file is only readable by yourself::
+  
+    $ chmod 600 ~/.netrc
+
+3. Configure YAMM to use your login to fetch Salome sources, for instance by
+   adding the following lines in your YAMM project configuration file::
+
+    # Configure the username for SALOME modules
+    project.options.set_global_option("occ_username", "mylogin")
+    
+    # Eventually configure the username for other modules
+    project.options.set_software_option("EFICAS", "occ_username", "myeficaslogin")
+    project.options.set_software_option("EFICASV1", "occ_username", "myeficaslogin")
+
+4. Launch YAMM to fetch and compile all Salome sources
+
+5. Go to the directory containing the sources of the module you need to develop
+   (for instance ~/salome/V7_main/modules/src/KERNEL).
+
+6. Create a new development branch, following the instructions in the previous
+   section. This development branch MUST track a remote branch so that the future
+   updates work properly.
+
+7. Edit your YAMM project to specify that you work on a new development branch,
+   for instance by adding the following lines::
+
+    softwares_user_version = {}
+    softwares_user_version["KERNEL"] = "rbe/my-new-development"
+    salome_project.options.set_global_option("softwares_user_version", softwares_user_version)
+
+8. You can then develop the new requested features and commit them. Each time
+   you run YAMM, it will merge the remote tracking branch in your local branch.
+   When you are done, you can push your developments on the remote repository and
+   ask an integrator to integrate them in the master branch, as explained in the
+   previous section.
+
+Proxy issues
+^^^^^^^^^^^^
+
+YAMM automatically configures the proxy settings for a standard usage at EDF
+(Calibre 7 computer inside EDF network). In this case, you have nothing special
+to do to access Salome repository. But if you are not in this standard
+configuration, the following tips may be useful.
+
+1. Non-standard computers: You have to authentify yourself to the proxy in order
+   to fetch Salome sources. For that, get the script edf-proxy-agent-cli
+   (available on every Calibre 7 computer in /usr/bin) that can be launched as a
+   daemon with -d option. Launch this script manually and type your SESAME
+   username and password (it must be done each time you log on your computer).
+   Further accesses to Salome repository should work properly.
+
+2. Computers outside EDF network: Set the variable "git_config_proxy" in your
+   YAMM project configuration to False in order to deactivate proxy usage::
+
+    salome_project.options.set_global_option("git_config_proxy", False)
+
+  If your computer is a laptop that is sometimes used inside EDF network and
+  sometimes outside, configure the proxy manually by adding those lines to your
+  ~/.bashrc file::
+  
+    export http_proxy=http://proxypac.edf.fr:3128
+    export https_proxy=http://proxypac.edf.fr:3128
+    export no_proxy="localhost,.edf.fr"
+
+  This configuration will work inside EDF network. Simply comment those three
+  lines when you use YAMM outside EDF network.
