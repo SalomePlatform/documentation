@@ -142,7 +142,16 @@ If you need to develop and push changes in Salome sources, follow those steps:
   
     $ chmod 600 ~/.netrc
 
-3. Configure YAMM to use your login to fetch Salome sources, for instance by
+3. Disable SSL verification for git. For that, edit the file $HOME/.bashrc and
+   add the following line::
+
+    export GIT_SSL_NO_VERIFY=true
+
+   Alternatively, if you have a root access on your computer, you can install
+   the right certificate and allow SSL verification. How to do so is out of the
+   scope of this guide.
+
+4. Configure YAMM to use your login to fetch Salome sources, for instance by
    adding the following lines in your YAMM project configuration file::
 
     # Configure the username for SALOME modules
@@ -152,23 +161,23 @@ If you need to develop and push changes in Salome sources, follow those steps:
     project.options.set_software_option("EFICAS", "occ_username", "myeficaslogin")
     project.options.set_software_option("EFICASV1", "occ_username", "myeficaslogin")
 
-4. Launch YAMM to fetch and compile all Salome sources
+5. Launch YAMM to fetch and compile all Salome sources
 
-5. Go to the directory containing the sources of the module you need to develop
+6. Go to the directory containing the sources of the module you need to develop
    (for instance ~/salome/V7_main/modules/src/KERNEL).
 
-6. Create a new development branch, following the instructions in the previous
+7. Create a new development branch, following the instructions in the previous
    section. This development branch MUST track a remote branch so that the future
    updates work properly.
 
-7. Edit your YAMM project to specify that you work on a new development branch,
+8. Edit your YAMM project to specify that you work on a new development branch,
    for instance by adding the following lines::
 
     softwares_user_version = {}
     softwares_user_version["KERNEL"] = "rbe/my-new-development"
     salome_project.options.set_global_option("softwares_user_version", softwares_user_version)
 
-8. You can then develop the new requested features and commit them. Each time
+9. You can then develop the new requested features and commit them. Each time
    you run YAMM, it will merge the remote tracking branch in your local branch.
    When you are done, you can push your developments on the remote repository and
    ask an integrator to integrate them in the master branch, as explained in the
