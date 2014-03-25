@@ -6,7 +6,7 @@
 # 		    GRAPHVIZ_FOUND        - True if Graphiz was found.
 #
 ###########################################################################
-# Copyright (C) 2007-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2007-2014  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # Copyright (C) 2003-2007  OPEN CASCADE, EADS/CCR, LIP6, CEA/DEN,
 # CEDRAT, EDF R&D, LEG, PRINCIPIA R&D, BUREAU VERITAS
@@ -14,7 +14,7 @@
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2.1 of the License.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +27,6 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
-###########################################################################
 
 FIND_PROGRAM(GRAPHVIZ_EXECUTABLE dot)
 
@@ -35,18 +34,22 @@ FIND_PATH(GRAPHVIZ_INCLUDE_DIR NAMES graphviz/graph.h)
 SET(GRAPHVIZ_INCLUDE_DIRS ${GRAPHVIZ_INCLUDE_DIR} ${GRAPHVIZ_INCLUDE_DIR}/graphviz)
 
 FIND_LIBRARY(GRAPHVIZ_cdt_LIBRARY      NAMES cdt PATH_SUFFIXES bin)
-FIND_LIBRARY(GRAPHVIZ_cgraph_LIBRARY   NAMES cgraph PATH_SUFFIXES bin)
 FIND_LIBRARY(GRAPHVIZ_graph_LIBRARY    NAMES graph PATH_SUFFIXES bin)
 FIND_LIBRARY(GRAPHVIZ_gvc_LIBRARY      NAMES gvc PATH_SUFFIXES bin)
 FIND_LIBRARY(GRAPHVIZ_pathplan_LIBRARY NAMES pathplan PATH_SUFFIXES bin)
 
 SET(GRAPHVIZ_LIBRARIES 
   ${GRAPHVIZ_cdt_LIBRARY}
-  ${GRAPHVIZ_cgraph_LIBRARY} 
   ${GRAPHVIZ_graph_LIBRARY} 
   ${GRAPHVIZ_gvc_LIBRARY}
   ${GRAPHVIZ_pathplan_LIBRARY}
   )
+
+## Don't detect cgraph on Windows
+#IF(NOT WIN32)
+#  FIND_LIBRARY(GRAPHVIZ_cgraph_LIBRARY   NAMES cgraph PATH_SUFFIXES bin)
+#  SET(GRAPHVIZ_LIBRARIES ${GRAPHVIZ_cgraph_LIBRARY})
+#ENDIF()
 
 # Handle the standard arguments of the find_package() command:
 INCLUDE(FindPackageHandleStandardArgs)

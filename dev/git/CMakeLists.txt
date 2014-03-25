@@ -1,9 +1,9 @@
-# Copyright (C) 2012-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2014  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2.1 of the License.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -27,7 +27,7 @@ SALOME_ADD_SPHINX_DOC( html git_doc ${CMAKE_CURRENT_SOURCE_DIR})
 
 # Install rules
 # ==========
-INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/_build/html DESTINATION ${SALOME_DOCUMENTATION_GIT_INSTALL}/build)
+INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/_build/html DESTINATION ${SALOME_INSTALL_DOC_DEV}/git)
 
 FILE(GLOB COMMON_DOCX_FIELS "${CMAKE_CURRENT_SOURCE_DIR}/*.docx")
-INSTALL(FILES ${COMMON_DOCX_FIELS} DESTINATION ${SALOME_DOCUMENTATION_GIT_INSTALL})
+INSTALL(FILES ${COMMON_DOCX_FIELS} DESTINATION ${SALOME_INSTALL_DOC_DEV}/git)

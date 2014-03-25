@@ -1,9 +1,9 @@
-# Copyright (C) 2013  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2013-2014  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2.1 of the License.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -30,7 +30,6 @@ SET(DOCUTILS_ROOT_DIR "$ENV{DOCUTILS_ROOT_DIR}" CACHE PATH "Path to the Docutils
 
 # Ensure the command is run with the given PYTHONPATH
 IF(WIN32 AND NOT CYGWIN)
-   MESSAGE(WARNING "Sphinx windows command not re-tested.")
    SET(SPHINX_EXECUTABLE ${SPHINX_EXECUTABLE})
 ELSE()
    SET(SPHINX_EXECUTABLE /usr/bin/env PYTHONPATH="${SPHINX_PYTHONPATH}:$$PYTHONPATH" ${SPHINX_EXECUTABLE})

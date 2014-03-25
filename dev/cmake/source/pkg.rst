@@ -135,7 +135,7 @@ The following guidelines apply:
     #
 
     ###########################################################################
-    # Copyright (C) 2007-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+    # Copyright (C) 2007-2014  CEA/DEN, EDF R&D, OPEN CASCADE
     <...>
     ###########################################################################
 

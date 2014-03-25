@@ -1,9 +1,9 @@
-# Copyright (C) 2012-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2014  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2.1 of the License.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,4 +20,4 @@
 # Install rules
 # ===========
 FILE(GLOB COMMON_PDF_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.pdf")
-INSTALL(FILES ${COMMON_PDF_FILES} DESTINATION ${SALOME_DOCUMENTATION_EXTRA_INSTALL})
+INSTALL(FILES ${COMMON_PDF_FILES} DESTINATION ${SALOME_INSTALL_DOC_EXTRA})

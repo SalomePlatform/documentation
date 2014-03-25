@@ -1,9 +1,9 @@
-# Copyright (C) 2012-2013  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2014  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
-# version 2.1 of the License.
+# version 2.1 of the License, or (at your option) any later version.
 #
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -381,13 +381,13 @@ MACRO(SALOME_FIND_PACKAGE englobPkg stdPkg mode)
       IF(${englobPkg}_FIND_COMPONENTS)
         FIND_PACKAGE(${stdPkg} ${${englobPkg}_FIND_VERSION} ${_tmp_exact} 
               NO_MODULE ${_tmp_quiet} ${_tmp_req} COMPONENTS ${${englobPkg}_FIND_COMPONENTS}
-              PATH_SUFFIXES "salome_adm/cmake_files" "adm_local/cmake_files"
+              PATH_SUFFIXES "salome_adm/cmake_files" "adm_local/cmake_files" "adm/cmake"
               NO_CMAKE_BUILDS_PATH NO_CMAKE_PACKAGE_REGISTRY NO_CMAKE_SYSTEM_PACKAGE_REGISTRY NO_CMAKE_SYSTEM_PATH
                 NO_SYSTEM_ENVIRONMENT_PATH)
       ELSE()
         FIND_PACKAGE(${stdPkg} ${${englobPkg}_FIND_VERSION} ${_tmp_exact} 
               NO_MODULE ${_tmp_quiet} ${_tmp_req}
-              PATH_SUFFIXES "salome_adm/cmake_files" "adm_local/cmake_files"
+              PATH_SUFFIXES "salome_adm/cmake_files" "adm_local/cmake_files" "adm/cmake"
               NO_CMAKE_BUILDS_PATH NO_CMAKE_PACKAGE_REGISTRY NO_CMAKE_SYSTEM_PACKAGE_REGISTRY NO_CMAKE_SYSTEM_PATH
                  NO_SYSTEM_ENVIRONMENT_PATH)
       ENDIF()
@@ -595,6 +595,21 @@ MACRO(SALOME_ADD_MPI_TO_HDF5)
 ENDMACRO(SALOME_ADD_MPI_TO_HDF5)
 
 ####################################################################
+# SALOME_TOHEXA()
+# Convert a number (smaller than 16) into hexadecimal representation
+# with a leading 0.
+MACRO(SALOME_TOHEXA num result)
+  SET(_hexa_map a b c d e f)
+  IF(${num} LESS 10)
+    SET(${result} "0${num}")
+  ELSE()
+    MATH(EXPR _res "${num}-10" )
+    LIST(GET _hexa_map ${_res} _out)
+    SET(${result} "0${_out}")
+  ENDIF()
+ENDMACRO(SALOME_TOHEXA)
+
+####################################################################
 # SALOME_XVERSION()
 # 
 # Computes hexadecimal version of SALOME package
@@ -613,10 +628,16 @@ ENDMACRO(SALOME_ADD_MPI_TO_HDF5)
 MACRO(SALOME_XVERSION pkg)
   STRING(TOUPPER ${pkg} _pkg_UC)
   IF(${_pkg_UC}_VERSION)
-    EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} -c "import sys; t=sys.argv[-1].split(\".\") ; t[:]=(int(elt) for elt in t) ; sys.stdout.write(\"0x%02x%02x%02x\"%tuple(t))" ${${_pkg_UC}_VERSION}
-                    OUTPUT_VARIABLE ${_pkg_UC}_XVERSION)
+    SET(_major)
+    SET(_minor)
+    SET(_patch)
+    SALOME_TOHEXA(${${_pkg_UC}_MAJOR_VERSION} _major)
+    SALOME_TOHEXA(${${_pkg_UC}_MINOR_VERSION} _minor)
+    SALOME_TOHEXA(${${_pkg_UC}_PATCH_VERSION} _patch)
+    SET(${_pkg_UC}_XVERSION "0x${_major}${_minor}${_patch}")
   ENDIF()
 ENDMACRO(SALOME_XVERSION)
+
 
 #########################################################################
 # SALOME_ACCUMULATE_HEADERS()
@@ -736,6 +757,14 @@ MACRO(SALOME_GENERATE_ENVIRONMENT_SCRIPT output script cmd opts)
     SET(_script ${CMAKE_CURRENT_BINARY_DIR}/${script})
   ENDIF()
 
+  IF(WIN32)
+    SET(_ext "bat")
+    SET(_call_cmd "call")
+  ELSE()
+    SET(_ext "sh")
+    SET(_call_cmd ".")
+  ENDIF()
+  
   SET(_env)
   FOREACH(_item ${_${PROJECT_NAME}_EXTRA_ENV})
     FOREACH(_val ${_${PROJECT_NAME}_EXTRA_ENV_${_item}})
@@ -743,13 +772,9 @@ MACRO(SALOME_GENERATE_ENVIRONMENT_SCRIPT output script cmd opts)
         IF(${_item} STREQUAL "LD_LIBRARY_PATH")
           SET(_item PATH)
         ENDIF()
-        STRING(REPLACE "/" "\\" _env "${_env} @SET ${_item}=${_val};%${_item}%\n")
-        SET(_ext "bat")
-        SET(_call_cmd "call")
+        STRING(REPLACE "/" "\\" _env "${_env} @SET ${_item}=${_val};%${_item}%\n")        
       ELSE(WIN32)
         SET(_env "${_env} export ${_item}=${_val}:\${${_item}}\n")
-        SET(_ext "sh")
-        SET(_call_cmd ".")
       ENDIF(WIN32)
     ENDFOREACH()
   ENDFOREACH()
@@ -776,19 +801,57 @@ ENDMACRO(SALOME_GENERATE_ENVIRONMENT_SCRIPT)
 # and puts this variable into <output> argument.
 #
 MACRO(SALOME_GENERATE_TESTS_ENVIRONMENT output)
-  SET(_env)
-  FOREACH(_item ${_${PROJECT_NAME}_EXTRA_ENV})
-    FOREACH(_val ${_${PROJECT_NAME}_EXTRA_ENV_${_item}})
-      IF(WIN32)
-        SET(_env "${_val};${_env}")
-      ELSE()
-        SET(_env "${_val}:${_env}")
-      ENDIF()
-    ENDFOREACH()
-    SET(_env " ${_item}=${_env}")
-  ENDFOREACH() 
-  SET(${output} ${_env})  
-ENDMACRO(SALOME_GENERATE_TESTS_ENVIRONMENT)
+ SET(_env)
+ SET(_WIN_LD_LIBRARY OFF)
+ FOREACH(_item ${_${PROJECT_NAME}_EXTRA_ENV})
+   IF(${_item} STREQUAL "LD_LIBRARY_PATH")
+     SET(_WIN_LD_LIBRARY ON)
+   ENDIF()
+   SET(_env_${_item})
+   FOREACH(_val ${_${PROJECT_NAME}_EXTRA_ENV_${_item}})
+     IF(WIN32)
+       STRING(REPLACE "/" "\\" _val "${_val}")
+       SET(_env_${_item} "${_val};${_env_${_item}}")
+     ELSE()
+       SET(_env_${_item} "${_val}:${_env_${_item}}")
+     ENDIF()
+   ENDFOREACH()
+ ENDFOREACH()
+
+ IF(_WIN_LD_LIBRARY AND WIN32)
+   SET(_env_PATH "${_env_PATH}$ENV{LD_LIBRARY_PATH};${_env_LD_LIBRARY_PATH}")
+ ENDIF()
+
+ IF(WIN32)
+   SET(sep ",")
+ ELSE()
+   SET(sep ";")
+ ENDIF()
+ 
+ FOREACH(_item ${_${PROJECT_NAME}_EXTRA_ENV})
+   IF(WIN32)
+     IF(NOT ${_item} STREQUAL "LD_LIBRARY_PATH")
+       SET(_env "${_item}=$ENV{${_item}};${_env_${_item}}${sep}${_env}")
+     ENDIF()
+   ELSE()
+     SET(_env "${_item}=$ENV{${_item}}:${_env_${_item}}${sep}${_env}")
+   ENDIF()
+ ENDFOREACH()
+
+ # Get module name as substring of "Salome<ModuleName>"
+ STRING(SUBSTRING "${PROJECT_NAME}" 6 -1 PRNAME) 
+ SET(_env "${PRNAME}_ROOT_DIR=${CMAKE_INSTALL_PREFIX}${sep}${_env}")
+  
+ # Creating follow string for Windows environement:
+ # "VAR1_ENV=1\;2\;3\;...\;...\;...;VAR2_ENV=1\;2\;3\;...\;...\;...;VAR3_ENV=1\;2\;3\;...\;...\;...;..."
+ IF(WIN32)
+   STRING(REGEX REPLACE "\\\\*;" "\\\\;" _env "${_env}")
+   STRING(REGEX REPLACE "\\\\*;*," ";" _env "${_env}")
+ ENDIF()
+
+ SET(${output} "${_env}")
+
+ENDMACRO(SALOME_GENERATE_TESTS_ENVIRONMENT) 
 
 #########################################################################
 # SALOME_APPEND_LIST_OF_LIST()
@@ -807,7 +870,15 @@ ENDMACRO(SALOME_GENERATE_TESTS_ENVIRONMENT)
 MACRO(SALOME_APPEND_LIST_OF_LIST result element_list)
   SET(_tmp_res)
   STRING(REPLACE ";" "," _tmp_res "${${element_list}}")
-  SET(${result} "${${result}};${_tmp_res}")  # LIST(APPEND ...) doesn't handle well empty elements!?
+
+  # Yet another CMake stupidity - LIST(LENGTH ";" var) returns 0
+  STRING(LENGTH result _list_len)
+  IF(NOT _list_len EQUAL 0)
+    SET(${result} "${${result}}${_tmp_res};")  # LIST(APPEND ...) doesn't handle well empty elements!?
+  ELSE()
+    SET(${result} "${_tmp_res};")              # to avoid redundant ';' at the beginning of the list
+  ENDIF()
+
 ENDMACRO(SALOME_APPEND_LIST_OF_LIST)
 
 #########################################################################
