@@ -39,9 +39,9 @@ LIST(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/CMakeModules")
 INCLUDE(SalomeSetupPlatform)
 INCLUDE(SalomeMacros)
 
-
 # Find prerequisites needed to documentation generation
 # ==================================================
+FIND_PACKAGE(SalomePython)
 FIND_PACKAGE(SalomeDoxygen)
 FIND_PACKAGE(SalomeGraphviz)
 FIND_PACKAGE(SalomeSphinx)
