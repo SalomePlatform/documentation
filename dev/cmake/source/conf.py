@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'CMake build procedure'
-copyright = u'2013-2014, Adrien Bruneton (CEA), Anthony Geay (CEA), Nicolas Geimer (EDF), Paul Rascle (EDF)'
+copyright = u'2013-2015, Adrien Bruneton (CEA), Anthony Geay (CEA), Nicolas Geimer (EDF), Paul Rascle (EDF)'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
