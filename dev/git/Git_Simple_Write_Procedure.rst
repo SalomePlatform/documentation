@@ -8,10 +8,10 @@ Get your copy of the central repository
 
 1. Clone the latest version of the repository for the module you want to modify::
 
-    git clone ssh://<proper-final-url> 
+    git clone ssh://<proper-url> 
   
   
-  This retrieves a local copy of the module's repository onto your machine. 
+  This retrieves a local copy of the module's repository onto your machine. The repository URL should have been given to you before you start.
 
 2. If you were already given a branch name to work with, you can simply retrieve it and start working::
 
@@ -26,22 +26,17 @@ Get your copy of the central repository
     git checkout -b <xyz/short_desc>
   
 
-  where <xyz> are you initials (John Smith gives 'jsm') and <short_desc> is a small string indicating what changes will be made. For example::
+  where <xyz> are you initials (John Smith gives 'jsh') and <short_desc> is a small string indicating what changes will be made. For example::
     
-    jsm/new_viewer
+    jsh/new_viewer
 
   
   The last command creates the branch locally, and update your working directory (i.e. the source code) to match this branch: every change and commit you make from now on will be stored in this branch.
 
 4. Publish your branch to the central repository for the first time::
 
-    git push -u origin <xyz/short_desc>
-  
-  
-  The option "-u" ensure your local branch will be easily synchronized with the remote copy on the central server. With older versions of Git you might have to execute the above in two steps::
-
     git push origin <xyz/short_desc>
-    git branch -u origin/<xyz/short_desc>
+  
   
   
 Workflow
@@ -50,7 +45,7 @@ Workflow
 1. If you didn't update your local copy for a while, update it with the following command. This retrieves from the central server all changes published by other people working on your branch. This step is not necessary if you just initialized your repository as described above::
 
     git checkout <xyz/short_desc>
-    git pull
+    git pull origin <xyz/short_desc>
   
 2. Do your changes, compile. 
 3. Perform the appropriate tests to ensure the changes work as expected.
@@ -76,7 +71,7 @@ Workflow
   
 6. Once you feel everything is ready to be seen by the rest of the world, you can publish your work. The first step is to synchronize again with any potential change published in your branch on the central repository. This can happen while you were working locally::
 
-    git pull
+    git pull origin <xyz/short_desc>
   
 7. At this stage, two situations can arise. If nothing (or some unrelated stuff to your work) happened on the central repository, Git will not complain (or potentially do an automatic merge). You can inspect the latest changes committed by others with commands like::
 
@@ -105,7 +100,7 @@ Workflow
   
 9. When all conflicts are solved (and the code has been compiled and tested again if needed) you can finally publish your work to the central repository::
 
-    git push
+    git push origin <xyz/short_desc>
 
   This makes your changes visible to others.
 
