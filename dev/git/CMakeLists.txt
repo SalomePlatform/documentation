@@ -21,9 +21,11 @@
 # ==================
 INCLUDE(SalomeDocumentationMacros)
 
+SALOME_CONFIGURE_FILE(conf.py.in conf.py)
+
 # Add sphinx documentation target
 # ============================
-SALOME_ADD_SPHINX_DOC( html git_doc ${CMAKE_CURRENT_SOURCE_DIR})
+SALOME_ADD_SPHINX_DOC( html git_doc ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 # Install rules
 # ==========

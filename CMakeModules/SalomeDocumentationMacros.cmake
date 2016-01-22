@@ -22,7 +22,7 @@
 #----------------------------------------------------------------------------
 # SALOME_ADD_SPHINX_DOC is a macro useful for generating sphinx documentation
 #
-# USAGE: SALOME_ADD_SPHINX_DOC(sphinx_type [path1 path2 ... ])
+# USAGE: SALOME_ADD_SPHINX_DOC(sphinx_type sphinx_name src_dir cfg_dir)
 #
 # ARGUMENTS:
 #
@@ -50,7 +50,10 @@
 # 
 # sphinx_name: IN - documentation target name
 #
-# path<N>    : IN - optional arguments, list of the paths whese contains the sphinx configuration files.
+# src_dir : IN - path to directory that contains the sphinx source files
+# 
+# cfg_dir : IN - path to directory that contains sphinx configuration file (if not specified,
+#           it is considered equal to src_dir)
 #
 # ADDITIONAL SETTINGS:
 #
@@ -61,46 +64,49 @@
 #                        BUILDDIR      - local sphinx build directory  ("_build" by default)
 #----------------------------------------------------------------------------
 
-MACRO(SALOME_ADD_SPHINX_DOC sphinx_type sphinx_name)
+MACRO(SALOME_ADD_SPHINX_DOC sphinx_type sphinx_name src_dir cfg_dir)
 
-# Get type and additional settings
- SET(SPHINX_TYPE ${sphinx_type})
- IF(${SPHINX_TYPE} STREQUAL "")
-   SET(SPHINX_TYPE html)
- ENDIF(${SPHINX_TYPE} STREQUAL "")
+  # Get type and additional settings
+  SET(SPHINX_TYPE ${sphinx_type})
+  IF(${SPHINX_TYPE} STREQUAL "")
+    SET(SPHINX_TYPE html)
+  ENDIF(${SPHINX_TYPE} STREQUAL "")
 
- IF("${PAPER}" STREQUAL "")
-   SET(PAPER a4)
- ENDIF()
+  IF("${PAPER}" STREQUAL "")
+    SET(PAPER a4)
+  ENDIF()
  
- IF("${BUILDDIR}" STREQUAL "")
-   SET(BUILDDIR _build)
- ENDIF()
+  IF("${BUILDDIR}" STREQUAL "")
+    SET(BUILDDIR _build)
+  ENDIF()
 
- # Initialize internal variables
- SET(PAPEROPT_a4 -D latex_paper_size=a4)
- SET(PAPEROPT_letter -D latex_paper_size=letter)
- SET(ALLSPHINXOPTS  -d ${BUILDDIR}/doctrees ${PAPEROPT_${PAPER}} ${SPHINXOPTS})
- SET(I18NSPHINXOPTS  ${PAPEROPT_${PAPER}} ${SPHINXOPTS})
+  SET(SPHINX_CFG ${cfg_dir})
+  IF("${SPHINX_CFG}" STREQUAL "")
+    SET(SPHINX_CFG ${src_dir})
+  ENDIF()
 
- FOREACH(value ${ARGN})
-   SET(ALLSPHINXOPTS ${ALLSPHINXOPTS} ${value})
-   SET(I18NSPHINXOPTS ${I18NSPHINXOPTS} ${value})
- ENDFOREACH(value ${ARGN})
+  # Initialize internal variables
+  SET(PAPEROPT_a4 -D latex_paper_size=a4)
+  SET(PAPEROPT_letter -D latex_paper_size=letter)
+  SET(ALLSPHINXOPTS  -d ${BUILDDIR}/doctrees ${PAPEROPT_${PAPER}} ${SPHINXOPTS})
+  SET(I18NSPHINXOPTS  ${PAPEROPT_${PAPER}} ${SPHINXOPTS})
 
- # Set internal out directory
- SET(_OUT_DIR ${sphinx_type}) 
- IF(${sphinx_type} STREQUAL "gettext")
-   SET(_OUT_DIR gettext)
-   SET(ALLSPHINXOPTS ${I18NSPHINXOPTS})
- ENDIF(${sphinx_type} STREQUAL "gettext")
+  SET(ALLSPHINXOPTS ${ALLSPHINXOPTS} ${src_dir})
+  SET(I18NSPHINXOPTS ${I18NSPHINXOPTS} ${src_dir})
 
- # Build sphinx command
- SET(_CMD_OPTIONS -b ${sphinx_type} ${ALLSPHINXOPTS} ${BUILDDIR}/${_OUT_DIR})
+  # Set internal out directory
+  SET(_OUT_DIR ${SPHINX_TYPE}) 
+  IF(${SPHINX_TYPE} STREQUAL "gettext")
+    SET(_OUT_DIR gettext)
+    SET(ALLSPHINXOPTS ${I18NSPHINXOPTS})
+  ENDIF(${SPHINX_TYPE} STREQUAL "gettext")
 
- # This macro mainly prepares the environment in which sphinx should run:
- # this sets the PYTHONPATH and LD_LIBRARY_PATH to include OMNIORB, DOCUTILS, SETUPTOOLS, etc ...
- SALOME_GENERATE_ENVIRONMENT_SCRIPT(_cmd env_script "${SPHINX_EXECUTABLE}" "${_CMD_OPTIONS}")
- ADD_CUSTOM_TARGET(${sphinx_name} ALL ${_cmd})
+  # Build sphinx command
+  SET(_CMD_OPTIONS -b ${SPHINX_TYPE} -c ${SPHINX_CFG} ${ALLSPHINXOPTS} ${BUILDDIR}/${_OUT_DIR})
 
-ENDMACRO(SALOME_ADD_SPHINX_DOC sphinx_type)
+  # This macro mainly prepares the environment in which sphinx should run:
+  # this sets the PYTHONPATH and LD_LIBRARY_PATH to include OMNIORB, DOCUTILS, SETUPTOOLS, etc ...
+  SALOME_GENERATE_ENVIRONMENT_SCRIPT(_cmd env_script "${SPHINX_EXECUTABLE}" "${_CMD_OPTIONS}")
+  ADD_CUSTOM_TARGET(${sphinx_name} ALL ${_cmd})
+
+ENDMACRO(SALOME_ADD_SPHINX_DOC)
