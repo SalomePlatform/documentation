@@ -41,7 +41,8 @@ INCLUDE(SalomeMacros)
 
 # Find prerequisites needed to documentation generation
 # ==================================================
-FIND_PACKAGE(SalomePython)
+FIND_PACKAGE(SalomePythonInterp)
+FIND_PACKAGE(SalomePythonLibs)
 FIND_PACKAGE(SalomeDoxygen)
 FIND_PACKAGE(SalomeGraphviz)
 FIND_PACKAGE(SalomeSphinx)
