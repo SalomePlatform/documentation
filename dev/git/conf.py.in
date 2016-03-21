@@ -41,7 +41,7 @@ master_doc = 'Git_Simple_Write_Procedure'
 
 # General information about the project.
 project = u'Git - Short procedure'
-copyright = u'2013-2015, Adrien BRUNETON (CEA/DANS/STMF/LGLS)'
+copyright = u'2013-2016, Adrien BRUNETON (CEA/DANS/STMF/LGLS)'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
