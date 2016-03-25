@@ -1,4 +1,4 @@
-# Copyright (C) 2012-2015  CEA/DEN, EDF R&D, OPEN CASCADE
+# Copyright (C) 2012-2016  CEA/DEN, EDF R&D, OPEN CASCADE
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,8 @@ INCLUDE(SalomeMacros)
 
 # Find prerequisites needed to documentation generation
 # ==================================================
-FIND_PACKAGE(SalomePython)
+FIND_PACKAGE(SalomePythonInterp)
+FIND_PACKAGE(SalomePythonLibs)
 FIND_PACKAGE(SalomeDoxygen)
 FIND_PACKAGE(SalomeGraphviz)
 FIND_PACKAGE(SalomeSphinx)
