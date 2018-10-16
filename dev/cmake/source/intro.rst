@@ -89,14 +89,14 @@ GUI module - on top of some of the KERNEL prerequisites, the following variables
 * QWT_ROOT_DIR: Qwt package
 * OPENGL_ROOT_DIR: OpenGL package
 
-MED module - on top of some of the KERNEL and GUI prerequisites, the following variables are used:
+FIELDS module - on top of some of the KERNEL and GUI prerequisites, the following variables are used:
 
 * MEDFILE_ROOT_DIR: MEDFile package
 * METIS_ROOT_DIR (optional): Metis package
 * PARMETIS_ROOT_DIR (optional): ParMetis package
 * SCOTCH_ROOT_DIR (optional): Scotch package
 
-PARAVIS module - on top of some of the KERNEL, GUI and MED prerequisites, the following variables are used:
+PARAVIS module - on top of some of the KERNEL, GUI and FIELDS prerequisites, the following variables are used:
 
 * PARAVIEW_ROOT_DIR: ParaView package
 * at present for a proper build of PARAVIS, the env variables LD_LIBRARY_PATH and PYTHONPATH should be set to contain the HDF5 and ParaView libraries. This is required since the configuration process itself uses a Python script in which the environment is not overriden::

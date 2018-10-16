@@ -16,7 +16,7 @@ The root CMakeLists.txt should contain the following elements:
   * SALOME_BUILD_TESTS: wether the unit tests should be built
   * SALOME_BUILD_DOC: wether the documentation for the current module should be generated and installed
 
-  Other flags specific to the module might be added, and should then start with *SALOME_XYZ_* where <XYZ> is the module's name (MED for example).
+  Other flags specific to the module might be added, and should then start with *SALOME_XYZ_* where <XYZ> is the module's name (FIELDS for example).
 
 * Detection of the required prerequisites for the module. All prerequisites in SALOME are detected through a call to FIND_PACKAGE(SalomeXYZ ...). See section :ref:`package`::
 

@@ -25,7 +25,7 @@ The last point was however never tested in the SALOME context, and probably need
 In the SALOME context this logic offers the advantage to have a minimal specification on the prerequisites. Technically one just needs to set the _ROOT_DIR variables for the packages that were never found before, and to get "for free" what was already found in a dependent module (for example Qt4 in GUI, but not OmniORB as it was already used by KERNEL). This works thanks to the exposition of all the ROOT_DIR used by one module into its configuration file. This can then be automatically reused by a dependent module.
 
 Inspired from the CMake tutorial (http://www.cmake.org/Wiki/CMake/Tutorials/How_to_create_a_ProjectConfig.cmake_file) some 
-important module use this scheme and install the \*Config.cmake files facilitating the configuration of other dependent modules. Most important SALOME modules (KERNEL, GUI, MED) expose their configuration in such a way. 
+important module use this scheme and install the \*Config.cmake files facilitating the configuration of other dependent modules. Most important SALOME modules (KERNEL, GUI, FIELDS) expose their configuration in such a way. 
 
 
 Guidelines
