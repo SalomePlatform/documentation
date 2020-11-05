@@ -17,23 +17,24 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-SALOME_CONFIGURE_FILE(conf.py.in conf.py)
+# Install [examples] documentation for SALOME modules
+# ===================================================
 
-# Build with sphinx
-# =================
+SET(_modules
+  BLSURFPLUGIN
+  GEOM
+  GHS3DPLUGIN
+  GMSHPLUGIN
+  HYBRIDPLUGIN
+  HexoticPLUGIN
+  NETGENPLUGIN
+  SMESH
+)
 
-SALOME_ADD_SPHINX_DOC(html
-                      git_doc
-                      ${CMAKE_CURRENT_SOURCE_DIR}
-                      ${CMAKE_CURRENT_BINARY_DIR})
-
-# Install
-# =======
-
-INSTALL(DIRECTORY
-        ${CMAKE_CURRENT_BINARY_DIR}/_build/html
-        DESTINATION ${SALOME_INSTALL_DOC_DEV}/git)
-
-INSTALL(FILES
-        Switch-To-GIT-2013-06.docx
-        DESTINATION ${SALOME_INSTALL_DOC_DEV}/git)
+FOREACH(_module ${_modules})
+  SET(${_module}_ROOT_DIR $ENV{${_module}_ROOT_DIR})
+  IF(${_module}_ROOT_DIR)
+    SALOME_INSTALL_MODULE_DOC(${${_module}_ROOT_DIR}/share/doc/salome/examples/${_module}
+                              DESTINATION ${SALOME_INSTALL_DOC_EXAMPLES})
+  ENDIF()
+ENDFOREACH()

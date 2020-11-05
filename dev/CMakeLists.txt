@@ -16,5 +16,39 @@
 #
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
+
+# Install content from subdirs
+# ============================
+
 ADD_SUBDIRECTORY(git)
 ADD_SUBDIRECTORY(cmake)
+
+# Install [dev] documentation for SALOME modules
+# ==============================================
+
+SET(_modules
+  FIELDS
+  PARAVIS
+)
+
+FOREACH(_module ${_modules})
+  SET(${_module}_ROOT_DIR $ENV{${_module}_ROOT_DIR})
+  IF(${_module}_ROOT_DIR)
+    SALOME_INSTALL_MODULE_DOC(${${_module}_ROOT_DIR}/share/doc/salome/dev/${_module}
+                              DESTINATION ${SALOME_INSTALL_DOC_DEV})
+  ENDIF()
+ENDFOREACH()
+
+# Special processing for MEDCoupling
+# ==================================
+
+SET(MEDCOUPLING_ROOT_DIR $ENV{MEDCOUPLING_ROOT_DIR})
+IF(MEDCOUPLING_ROOT_DIR)
+  SALOME_INSTALL_MODULE_DOC(${MEDCOUPLING_ROOT_DIR}/share/doc/developer
+                            DESTINATION ${SALOME_INSTALL_DOC_DEV}/MEDCoupling)
+  SALOME_INSTALL_MODULE_DOC(${MEDCOUPLING_ROOT_DIR}/share/doc/tutorial
+                            DESTINATION ${SALOME_INSTALL_DOC_DEV}/MEDCoupling)
+  SALOME_INSTALL_MODULE_DOC(${MEDCOUPLING_ROOT_DIR}/share/doc/user
+                            DESTINATION ${SALOME_INSTALL_DOC_DEV}/MEDCoupling
+                            INDEX html)
+ENDIF()

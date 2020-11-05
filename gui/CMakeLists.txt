@@ -17,6 +17,53 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Install rules
-# ==========
-INSTALL(FILES README DESTINATION ${SALOME_INSTALL_DOC_GUI})
+# Install [gui] documentation for SALOME modules
+# ==============================================
+
+SET(_modules
+  BLSURFPLUGIN
+  EFICAS
+  GEOM
+  GHS3DPLUGIN
+  GHS3DPRLPLUGIN
+  GMSHPLUGIN
+  GUI
+  HELLO
+  HEXABLOCK
+  HYBRIDPLUGIN
+  HexoticPLUGIN
+  JOBMANAGER
+  NETGENPLUGIN
+  PYHELLO
+  SHAPER
+  SMESH
+  YACS
+)
+
+FOREACH(_module ${_modules})
+  SET(${_module}_ROOT_DIR $ENV{${_module}_ROOT_DIR})
+  IF(${_module}_ROOT_DIR)
+    SALOME_INSTALL_MODULE_DOC(${${_module}_ROOT_DIR}/share/doc/salome/gui/${_module}
+                              DESTINATION ${SALOME_INSTALL_DOC_GUI})
+  ENDIF()
+ENDFOREACH()
+
+# Special processing for HOMARD
+# =============================
+
+SET(HOMARD_ROOT_DIR $ENV{HOMARD_ROOT_DIR})
+IF(HOMARD_ROOT_DIR)
+  SALOME_INSTALL_MODULE_DOC(${HOMARD_ROOT_DIR}/share/doc/salome/gui/HOMARD
+                            DESTINATION ${SALOME_INSTALL_DOC_GUI}
+                            INDEX en fr)
+ENDIF()
+
+# Special processing for ADAO
+# ===========================
+
+SET(ADAO_ROOT_DIR $ENV{ADAO_ROOT_DIR})
+IF(ADAO_ROOT_DIR)
+  SALOME_INSTALL_MODULE_DOC(${ADAO_ROOT_DIR}/share/doc/gui/ADAO
+                            DESTINATION ${SALOME_INSTALL_DOC_GUI}
+                            INDEX en fr)
+ENDIF()

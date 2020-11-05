@@ -17,6 +17,23 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Install rules
-# ==========
-INSTALL(FILES README DESTINATION ${SALOME_INSTALL_DOC_TUI})
+# Install [tui] documentation for SALOME modules
+# ==============================================
+
+SET(_modules
+  BLSURFPLUGIN
+  GEOM
+  GUI
+  KERNEL
+  SHAPER
+  SMESH
+  YACS
+)
+
+FOREACH(_module ${_modules})
+  SET(${_module}_ROOT_DIR $ENV{${_module}_ROOT_DIR})
+  IF(${_module}_ROOT_DIR)
+    SALOME_INSTALL_MODULE_DOC(${${_module}_ROOT_DIR}/share/doc/salome/tui/${_module}
+                              DESTINATION ${SALOME_INSTALL_DOC_TUI})
+  ENDIF()
+ENDFOREACH()
