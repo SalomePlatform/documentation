@@ -41,9 +41,10 @@ SET(_modules
 )
 
 FOREACH(_module ${_modules})
-  SET(${_module}_ROOT_DIR $ENV{${_module}_ROOT_DIR})
-  IF(${_module}_ROOT_DIR)
-    SALOME_INSTALL_MODULE_DOC(${${_module}_ROOT_DIR}/share/doc/salome/gui/${_module}
+  SET(_root_dir $ENV{${_module}_ROOT_DIR})
+  IF(_root_dir)
+    FILE(TO_CMAKE_PATH "${_root_dir}/share/doc/salome/gui/${_module}" _doc_path)
+    SALOME_INSTALL_MODULE_DOC("${_doc_path}"
                               DESTINATION ${SALOME_INSTALL_DOC_GUI})
   ENDIF()
 ENDFOREACH()
@@ -53,7 +54,8 @@ ENDFOREACH()
 
 SET(HOMARD_ROOT_DIR $ENV{HOMARD_ROOT_DIR})
 IF(HOMARD_ROOT_DIR)
-  SALOME_INSTALL_MODULE_DOC(${HOMARD_ROOT_DIR}/share/doc/salome/gui/HOMARD
+  FILE(TO_CMAKE_PATH "${HOMARD_ROOT_DIR}/share/doc/salome/gui/HOMARD" _doc_path)
+  SALOME_INSTALL_MODULE_DOC("${_doc_path}"
                             DESTINATION ${SALOME_INSTALL_DOC_GUI}
                             INDEX en fr)
 ENDIF()
@@ -63,7 +65,8 @@ ENDIF()
 
 SET(ADAO_ROOT_DIR $ENV{ADAO_ROOT_DIR})
 IF(ADAO_ROOT_DIR)
-  SALOME_INSTALL_MODULE_DOC(${ADAO_ROOT_DIR}/share/doc/gui/ADAO
+  FILE(TO_CMAKE_PATH "${ADAO_ROOT_DIR}/share/doc/gui/ADAO" _doc_path)
+  SALOME_INSTALL_MODULE_DOC("${_doc_path}"
                             DESTINATION ${SALOME_INSTALL_DOC_GUI}
                             INDEX en fr)
 ENDIF()
