@@ -17,16 +17,19 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Include common macros
-# ==================
-INCLUDE(SalomeDocumentationMacros)
-
 SALOME_CONFIGURE_FILE(source/conf.py.in conf.py)
 
-# Add sphinx documentation target
-# ============================
-SALOME_ADD_SPHINX_DOC(html cmake_doc ${CMAKE_CURRENT_SOURCE_DIR}/source ${CMAKE_CURRENT_BINARY_DIR})
+# Build with sphinx
+# =================
 
-# Install rules
-# ==========
-INSTALL(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/_build/html DESTINATION ${SALOME_INSTALL_DOC_DEV}/cmake)
+SALOME_ADD_SPHINX_DOC(html
+                      cmake_doc
+                      ${CMAKE_CURRENT_SOURCE_DIR}/source
+                      ${CMAKE_CURRENT_BINARY_DIR})
+
+# Install
+# =======
+
+INSTALL(DIRECTORY
+        ${CMAKE_CURRENT_BINARY_DIR}/_build/html
+        DESTINATION ${SALOME_INSTALL_DOC_DEV}/cmake)

@@ -23,17 +23,14 @@ SALOME_CONFIGURE_FILE(conf.py.in conf.py)
 # =================
 
 SALOME_ADD_SPHINX_DOC(html
-                      git_doc
+                      nomain_doc
                       ${CMAKE_CURRENT_SOURCE_DIR}
-                      ${CMAKE_CURRENT_BINARY_DIR})
+                      ${CMAKE_CURRENT_BINARY_DIR}
+                      OUTDIR main)
 
 # Install
 # =======
 
 INSTALL(DIRECTORY
-        ${CMAKE_CURRENT_BINARY_DIR}/_build/html
-        DESTINATION ${SALOME_INSTALL_DOC_DEV}/git)
-
-INSTALL(FILES
-        Switch-To-GIT-2013-06.docx
-        DESTINATION ${SALOME_INSTALL_DOC_DEV}/git)
+        ${CMAKE_CURRENT_BINARY_DIR}/_build/main
+        DESTINATION ${SALOME_INSTALL_DOC_MAIN})

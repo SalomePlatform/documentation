@@ -17,7 +17,8 @@
 # See http://www.salome-platform.org/ or email : webmaster.salome@opencascade.com
 #
 
-# Install rules
-# ===========
+# Install
+# =======
+
 FILE(GLOB COMMON_PDF_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.pdf")
 INSTALL(FILES ${COMMON_PDF_FILES} DESTINATION ${SALOME_INSTALL_DOC_EXTRA})
