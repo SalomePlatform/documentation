@@ -56,6 +56,8 @@ INCLUDE(CMakeDependentOption)
 OPTION(SALOME_INSTALL_MODULES_DOC "Install documentation of SALOME modules" OFF)
 CMAKE_DEPENDENT_OPTION(SALOME_CREATE_SYMLINKS "Create symlinks instead of installing docs" OFF
                        "NOT WIN32;SALOME_INSTALL_MODULES_DOC" OFF)
+CMAKE_DEPENDENT_OPTION(SALOME_RELATIVE_SYMLINKS "Make relative symlinks instead of absolute ones" OFF
+                       "NOT WIN32;SALOME_INSTALL_MODULES_DOC;SALOME_CREATE_SYMLINKS" OFF)
 
 # Find prerequisites needed to documentation generation
 # =====================================================

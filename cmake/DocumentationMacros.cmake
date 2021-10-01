@@ -13,6 +13,11 @@
 # ==============================================================================
 
 MACRO(SALOME_CREATE_SYMLINK src_path link_path)
+  IF(SALOME_RELATIVE_SYMLINKS)
+    FILE(RELATIVE_PATH _link "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${link_path}/.." "${src_path}")
+  ELSE()
+    SET(_link "${src_path}")
+  ENDIF()
   INSTALL(CODE "
           IF(EXISTS \"${src_path}\")
             MESSAGE(STATUS \"Creating symbolic link \$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${link_path}\")
@@ -20,7 +25,8 @@ MACRO(SALOME_CREATE_SYMLINK src_path link_path)
             EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E make_directory
                     \"\${_path}\")
             EXECUTE_PROCESS(COMMAND ${CMAKE_COMMAND} -E create_symlink
-                    \"${src_path}\" \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${link_path}\")
+                    \"${_link}\" \"\$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${link_path}\"
+                    WORKING_DIRECTORY \"${_path}\")
           ENDIF()
           ")
 ENDMACRO()
