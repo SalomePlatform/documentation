@@ -34,7 +34,6 @@ can be used for generating mesh from the CAD model.*
     * `Netgen plugin module <../gui/NETGENPLUGIN/index.html>`__
     * `MG-CADSurf plugin module <../gui/BLSURFPLUGIN/index.html>`__
     * `MG-Tetra plugin module <../gui/GHS3DPLUGIN/index.html>`__
-    * `MG-Tetra Parallel plugin module <../gui/GHS3DPRLPLUGIN/index.html>`__
     * `MG-Hexa plugin module <../gui/HexoticPLUGIN/index.html>`__
     * `MG-Hybrid plugin module <../gui/HYBRIDPLUGIN/index.html>`__
     * `Gmsh plugin module <../gui/GMSHPLUGIN/index.html>`__
